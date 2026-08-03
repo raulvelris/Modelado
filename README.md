@@ -1,6 +1,6 @@
-# Modelos de Datos - Fisiowellness
+# Modelos de Datos
 
-Este repositorio contiene los modelos Entidad–Relación (ER) del sistema de información propuesto para la clínica de fisioterapia **Fisiowellness**.
+Este repositorio contiene los modelos Entidad–Relación (ER) del sistema de información propuesto.
 
 ## 📋 Contenido
 
