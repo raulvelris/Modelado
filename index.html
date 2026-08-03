@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Visor de Diagramas</title>
+
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#202124;
+    color:white;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+header{
+    background:#2b2d31;
+    padding:15px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,.3);
+}
+
+.tab{
+
+    border:none;
+    padding:12px 35px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.25s;
+
+    background:#555;
+    color:white;
+}
+
+.tab.active{
+
+    background:#1f6feb;
+}
+
+.tab:hover{
+
+    opacity:.9;
+}
+
+#viewer{
+
+    flex:1;
+    overflow:hidden;
+}
+
+object{
+
+    width:100%;
+    height:100%;
+}
+
+.toolbar{
+
+    position:fixed;
+
+    right:20px;
+    top:20px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:10px;
+
+    z-index:999;
+}
+
+.toolbar button{
+
+    width:45px;
+    height:45px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#1f6feb;
+    color:white;
+
+    cursor:pointer;
+    font-size:22px;
+}
+
+.toolbar button:hover{
+
+    background:#388bfd;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<button class="tab active" data-file="MODELO_AS_IS.svg">
+AS-IS
+</button>
+
+<button class="tab" data-file="MODELO_TO_BE.svg">
+TO-BE
+</button>
+
+</header>
+
+<div class="toolbar">
+
+<button id="plus">+</button>
+
+<button id="minus">−</button>
+
+<button id="reset">⌂</button>
+
+</div>
+
+<div id="viewer">
+
+<object
+id="diagram"
+data="MODELO_AS_IS.svg"
+type="image/svg+xml">
+</object>
+
+</div>
+
+<script>
+
+let panZoom=null;
+
+const object=document.getElementById("diagram");
+
+function loadDiagram(file){
+
+    object.data=file;
+
+}
+
+object.addEventListener("load",()=>{
+
+    const svg=object.contentDocument.querySelector("svg");
+
+    if(panZoom){
+
+        panZoom.destroy();
+
+    }
+
+    panZoom=svgPanZoom(svg,{
+
+        zoomEnabled:true,
+
+        controlIconsEnabled:false,
+
+        fit:true,
+
+        center:true,
+
+        minZoom:0.2,
+
+        maxZoom:20,
+
+        mouseWheelZoomEnabled:true,
+
+        dblClickZoomEnabled:true,
+
+        preventMouseEventsDefault:true
+
+    });
+
+});
+
+document.querySelectorAll(".tab").forEach(btn=>{
+
+    btn.onclick=()=>{
+
+        document
+        .querySelectorAll(".tab")
+        .forEach(b=>b.classList.remove("active"));
+
+        btn.classList.add("active");
+
+        loadDiagram(btn.dataset.file);
+
+    }
+
+});
+
+document.getElementById("plus").onclick=()=>{
+
+    if(panZoom) panZoom.zoomIn();
+
+}
+
+document.getElementById("minus").onclick=()=>{
+
+    if(panZoom) panZoom.zoomOut();
+
+}
+
+document.getElementById("reset").onclick=()=>{
+
+    if(!panZoom) return;
+
+    panZoom.resetZoom();
+    panZoom.fit();
+    panZoom.center();
+
+}
+
+</script>
+
+</body>
+</html>
