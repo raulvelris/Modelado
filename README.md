@@ -11,7 +11,7 @@ Este repositorio contiene los modelos Entidad–Relación (ER) del sistema de in
 
 Puedes explorar ambos diagramas con zoom, desplazamiento y cambio entre modelos desde el siguiente enlace:
 
-👉 **https://raulvelris.github.io/Modelos-Fisiowellness/**
+👉 **https://raulvelris.github.io/Modelado/**
 
 ## 📄 Diagramas individuales
 
