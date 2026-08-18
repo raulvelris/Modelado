@@ -147,90 +147,109 @@ type="image/svg+xml">
 </div>
 
 <script>
+let panZoom = null;
 
-let panZoom=null;
+const object = document.getElementById("diagram");
 
-const object=document.getElementById("diagram");
-
-function loadDiagram(file){
-
-    object.data=file;
-
-}
-
-object.addEventListener("load",()=>{
-
-    const svg=object.contentDocument.querySelector("svg");
-
-    if(panZoom){
-
+function loadDiagram(file) {
+    // Destruir la instancia anterior
+    if (panZoom) {
         panZoom.destroy();
-
+        panZoom = null;
     }
 
-    panZoom=svgPanZoom(svg,{
+    // Cambiar el SVG
+    object.data = file;
+}
 
-        zoomEnabled:true,
+object.addEventListener("load", () => {
 
-        controlIconsEnabled:false,
+    try {
+        const svgDoc = object.contentDocument;
 
-        fit:true,
+        if (!svgDoc) {
+            console.error("No se pudo acceder al documento SVG.");
+            return;
+        }
 
-        center:true,
+        const svg = svgDoc.querySelector("svg");
 
-        minZoom:0.2,
+        if (!svg) {
+            console.error("No se encontró <svg> dentro del archivo.");
+            return;
+        }
 
-        maxZoom:20,
+        panZoom = svgPanZoom(svg, {
+            zoomEnabled: true,
+            controlIconsEnabled: false,
 
-        mouseWheelZoomEnabled:true,
+            fit: true,
+            center: true,
 
-        dblClickZoomEnabled:true,
+            minZoom: 0.2,
+            maxZoom: 20,
 
-        preventMouseEventsDefault:true
+            mouseWheelZoomEnabled: true,
+            dblClickZoomEnabled: true,
 
-    });
+            preventMouseEventsDefault: true
+        });
 
+    } catch (error) {
+        console.error("Error inicializando svg-pan-zoom:", error);
+    }
 });
 
-document.querySelectorAll(".tab").forEach(btn=>{
 
-    btn.onclick=()=>{
+// BOTONES DE PESTAÑAS
+document.querySelectorAll(".tab").forEach(btn => {
+
+    btn.addEventListener("click", () => {
 
         document
-        .querySelectorAll(".tab")
-        .forEach(b=>b.classList.remove("active"));
+            .querySelectorAll(".tab")
+            .forEach(b => b.classList.remove("active"));
 
         btn.classList.add("active");
 
         loadDiagram(btn.dataset.file);
+    });
 
+});
+
+
+// ZOOM +
+document.getElementById("plus").addEventListener("click", () => {
+
+    if (panZoom) {
+        panZoom.zoomIn();
     }
 
 });
 
-document.getElementById("plus").onclick=()=>{
 
-    if(panZoom) panZoom.zoomIn();
+// ZOOM -
+document.getElementById("minus").addEventListener("click", () => {
 
-}
+    if (panZoom) {
+        panZoom.zoomOut();
+    }
 
-document.getElementById("minus").onclick=()=>{
+});
 
-    if(panZoom) panZoom.zoomOut();
 
-}
+// RESET
+document.getElementById("reset").addEventListener("click", () => {
 
-document.getElementById("reset").onclick=()=>{
-
-    if(!panZoom) return;
+    if (!panZoom) return;
 
     panZoom.resetZoom();
     panZoom.fit();
     panZoom.center();
 
-}
-
+});
 </script>
+
 
 </body>
 </html>
